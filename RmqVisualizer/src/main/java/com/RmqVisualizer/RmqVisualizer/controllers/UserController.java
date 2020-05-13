@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("api/users")
@@ -27,6 +28,12 @@ public class UserController {
     public ResponseEntity<User> createOrUpdatePlayer(@RequestBody User user){
         User usersCreated = userService.createOrUpdatePlayer(user);
         return new ResponseEntity<User>(usersCreated, new HttpHeaders(), HttpStatus.CREATED);
+    }
+
+    @PatchMapping
+    public void updateCurrentPlayer(@RequestParam(value = "currentPlayer", required = false) UUID id){
+        User user = userService.getUserById(id);
+        userService.setCurrentUser(user);
     }
 
 }

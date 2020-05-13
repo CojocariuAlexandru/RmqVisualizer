@@ -1,5 +1,6 @@
 package com.RmqVisualizer.RmqVisualizer.services;
 
+import com.RmqVisualizer.RmqVisualizer.models.ProblemInstance;
 import com.RmqVisualizer.RmqVisualizer.models.User;
 import com.RmqVisualizer.RmqVisualizer.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,17 @@ import java.util.UUID;
 public class UserService {
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private ProblemInstanceService problemInstanceService;
+    private User currentUser;
+
+    public void setCurrentUser(User user){
+        currentUser = user;
+    }
+
+    public User getCurrentUser(){
+        return currentUser;
+    }
 
     public List<User> getAllUsers() {
         List<User> allUsers = userRepository.findAll();
@@ -21,6 +33,16 @@ public class UserService {
         } else {
             return new ArrayList<>();
         }
+    }
+
+    public User getUserById(UUID id){
+        List<User> allUsers = userRepository.findAll();
+        for(User user : allUsers){
+            if(user.getId().equals(id)){
+                return user;
+            }
+        }
+        return null;
     }
 
     public User createOrUpdatePlayer(User user) {
@@ -33,4 +55,9 @@ public class UserService {
         userRepository.delete(player);
     }
 
+    public void assignUserToProblemInstance(UUID idUser, UUID idProblemInstance){
+        User user = this.getUserById(idUser);
+        ProblemInstance instance = problemInstanceService.getProblemInstanceById(idProblemInstance);
+        user.getProblemInstanceList().add(instance);
+    }
 }
