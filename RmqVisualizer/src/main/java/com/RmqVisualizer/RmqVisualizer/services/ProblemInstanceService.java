@@ -48,6 +48,7 @@ public class ProblemInstanceService {
     }
 
     public void createPrecalculationNumbers(ProblemInstance instance){
+        instance.getPrecalculationNumbers().clear();
 
     }
 

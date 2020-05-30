@@ -1,10 +1,16 @@
 package com.RmqVisualizer.RmqVisualizer.models;
 
+
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
 import java.util.List;
 import java.util.UUID;
 
 @Entity
+@Setter
+@Getter
 public class ProblemInstance {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -12,31 +18,7 @@ public class ProblemInstance {
     @ElementCollection
     private List<Integer> numbers;
     @ElementCollection
-    private int[][] precalculationNumbers;
+    private List<Integer> precalculationNumbers;
     @ManyToOne
     private User user;
-
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public List<Integer> getNumbers() {
-        return numbers;
-    }
-
-    public void setNumbers(List<Integer> numbers) {
-        this.numbers = numbers;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
 }
