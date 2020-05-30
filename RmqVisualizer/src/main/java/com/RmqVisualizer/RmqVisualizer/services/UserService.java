@@ -2,6 +2,7 @@ package com.RmqVisualizer.RmqVisualizer.services;
 
 import com.RmqVisualizer.RmqVisualizer.models.ProblemInstance;
 import com.RmqVisualizer.RmqVisualizer.models.User;
+import com.RmqVisualizer.RmqVisualizer.repositories.ProblemInstanceRepository;
 import com.RmqVisualizer.RmqVisualizer.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,18 +13,15 @@ import java.util.UUID;
 
 @Service
 public class UserService {
-    @Autowired
     private UserRepository userRepository;
-    @Autowired
+    private ProblemInstanceRepository problemInstanceRepository;
     private ProblemInstanceService problemInstanceService;
-    private User currentUser;
 
-    public void setCurrentUser(User user){
-        currentUser = user;
-    }
-
-    public User getCurrentUser(){
-        return currentUser;
+    @Autowired
+    public UserService(UserRepository userRepository, ProblemInstanceService problemInstanceService, ProblemInstanceRepository problemInstanceRepository){
+        this.userRepository = userRepository;
+        this.problemInstanceService = problemInstanceService;
+        this.problemInstanceRepository = problemInstanceRepository;
     }
 
     public List<User> getAllUsers() {
@@ -38,6 +36,7 @@ public class UserService {
     public User getUserById(UUID id){
         List<User> allUsers = userRepository.findAll();
         for(User user : allUsers){
+            System.out.println(user.getId());
             if(user.getId().equals(id)){
                 return user;
             }
@@ -45,8 +44,21 @@ public class UserService {
         return null;
     }
 
-    public User createOrUpdatePlayer(User user) {
+    public User getUserByName(String userName){
+        List<User> allUsers = userRepository.findAll();
+        for(User user : allUsers){
+            if(user.getName().compareTo(userName) == 0){
+                return user;
+            }
+        }
+        return null;
+    }
+
+    public User createOrUpdateUser(String userName, List<ProblemInstance> instanceList) {
+        User user = new User();
         user.setId(UUID.randomUUID());
+        user.setName(userName);
+        user.setProblemInstanceList(instanceList);
         user = userRepository.save(user);
         return user;
     }
@@ -59,5 +71,9 @@ public class UserService {
         User user = this.getUserById(idUser);
         ProblemInstance instance = problemInstanceService.getProblemInstanceById(idProblemInstance);
         user.getProblemInstanceList().add(instance);
+        instance.setUser(user);
+
+        userRepository.save(user);
+        problemInstanceRepository.save(instance);
     }
 }

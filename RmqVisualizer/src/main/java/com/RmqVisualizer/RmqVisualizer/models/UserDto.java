@@ -5,12 +5,11 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity
-public class User {
+public class UserDto {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
     private String name;
-    private String password;
     @OneToMany
     List<ProblemInstance> problemInstanceList;
 

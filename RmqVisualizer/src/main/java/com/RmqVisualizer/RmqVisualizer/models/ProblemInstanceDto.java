@@ -5,16 +5,12 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity
-public class ProblemInstance {
+public class ProblemInstanceDto {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
     @ElementCollection
     private List<Integer> numbers;
-    @ElementCollection
-    private int[][] precalculationNumbers;
-    @ManyToOne
-    private User user;
 
     public UUID getId() {
         return id;
@@ -30,13 +26,5 @@ public class ProblemInstance {
 
     public void setNumbers(List<Integer> numbers) {
         this.numbers = numbers;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
     }
 }
