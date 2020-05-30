@@ -45,7 +45,7 @@ public class UserController {
     @PutMapping
     public ResponseEntity<User> createOrUpdateUser(@RequestBody User user){
         User usersCreated = userService.createOrUpdateUser(user.getName(), user.getProblemInstanceList());
-        logger.info("User created")
+        logger.info("User created");
         return new ResponseEntity<User>(usersCreated, new HttpHeaders(), HttpStatus.CREATED);
     }
 
