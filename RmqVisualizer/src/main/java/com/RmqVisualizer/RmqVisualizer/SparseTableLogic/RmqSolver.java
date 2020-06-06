@@ -46,9 +46,9 @@ public class RmqSolver {
 
         // Recursive case
         for(i=2; (1 << (i-1)) <= numbers.size(); i++){
-            for(j=1; j + powersOfTwo.get(i-2) <= numbers.size(); j++){
-                precalculatedNumbers.add(Math.min(precalculatedNumbers.get(translateMatrixIntoArrayCoordinates(i-1, j, numbers.size()))
-                                                , precalculatedNumbers.get(translateMatrixIntoArrayCoordinates(i-1, j+powersOfTwo.get(i-2), numbers.size()))
+            for(j=1; j + powersOfTwo.get(i-1) <= numbers.size()+1; j++){
+                precalculatedNumbers.add(Math.min(precalculatedNumbers.get(translateMatrixIntoArrayCoordinates(i-1, j, numbers.size())-1)
+                                                , precalculatedNumbers.get(translateMatrixIntoArrayCoordinates(i-1, j+powersOfTwo.get(i-2), numbers.size())-1)
                                         )
                 );
             }
@@ -59,14 +59,16 @@ public class RmqSolver {
     public Integer getMinimumFromRange(List<Integer> numbers, List<Integer> precalculatedNumbers, Integer leftIndex, Integer rightIndex){
         Integer segmentLength;
         Integer powerOfTwoUsed;
+        Integer exponent;
         segmentLength = rightIndex - leftIndex + 1;
-        powerOfTwoUsed = smallestPowerOfTwoSmallerThan(segmentLength);
-        return Math.min(precalculatedNumbers.get(translateMatrixIntoArrayCoordinates(powerOfTwoUsed+1, leftIndex, numbers.size())),
-                        precalculatedNumbers.get(translateMatrixIntoArrayCoordinates(powerOfTwoUsed+1, leftIndex+segmentLength-powersOfTwo.get(powerOfTwoUsed), numbers.size()))
+        powerOfTwoUsed = powersOfTwo.get(smallestPowerOfTwoSmallerThan(segmentLength));
+        exponent = smallestPowerOfTwoSmallerThan(segmentLength);
+        return Math.min(precalculatedNumbers.get(translateMatrixIntoArrayCoordinates(exponent+1, leftIndex, numbers.size())),
+                        precalculatedNumbers.get(translateMatrixIntoArrayCoordinates(exponent+1, leftIndex+segmentLength-powerOfTwoUsed, numbers.size()))
         );
     }
 
-    private Integer translateMatrixIntoArrayCoordinates(Integer line, Integer column, Integer numbersSize){
+    public Integer translateMatrixIntoArrayCoordinates(Integer line, Integer column, Integer numbersSize){
         line = line - 1;
         return line*numbersSize - (powersOfTwo.get(line) - 1 - line) + column;
     }
@@ -84,8 +86,12 @@ public class RmqSolver {
                 rightIndex = middleIndex;
             }
         }
+
         if(maximum == powersOfTwo.get(rightIndex)){
             return rightIndex;
+        }
+        else if(maximum >= powersOfTwo.get(rightIndex+1)){
+            return rightIndex+1;
         }
         else{
             return rightIndex - 1;
