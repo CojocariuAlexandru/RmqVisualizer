@@ -32,12 +32,11 @@ public class ProblemInstanceController {
         this.userService = userService;
     }
 
+    @RequestMapping(value = "/result")
     @GetMapping
-    public ResponseEntity<ProblemInstance> getProblemInstances(@PathVariable int userIndex, @PathVariable int instanceIndex){
-
-        List<ProblemInstance> instances = problemInstanceService.getProblemInstanceByUserId(userService.getUserByIndex(userIndex).getId());
-        ProblemInstance instanceSearched = instances.get(instanceIndex-1);
-        return new ResponseEntity<ProblemInstance>(instanceSearched, new HttpHeaders(), HttpStatus.OK);
+    public ResponseEntity<Integer> getProblemInstances(@PathVariable int userIndex, @PathVariable int instanceIndex, @RequestParam int leftIndex, @RequestParam int rightIndex){
+        ProblemInstance instance = userService.getInstanceByUserAndInstanceIndex(userIndex, instanceIndex);
+        return new ResponseEntity<Integer>(problemInstanceService.getMinimumNumber(instance, leftIndex, rightIndex), new HttpHeaders(), HttpStatus.CREATED);
     }
 
     @PostMapping

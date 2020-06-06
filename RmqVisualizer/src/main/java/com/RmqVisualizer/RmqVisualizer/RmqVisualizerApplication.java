@@ -11,9 +11,9 @@ public class RmqVisualizerApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(RmqVisualizerApplication.class, args);
-		JUnitCore junit = new JUnitCore();
-		junit.addListener(new TextListener(System.out));
-		junit.run(ApplicationTest.class);
+//		JUnitCore junit = new JUnitCore();
+//		junit.addListener(new TextListener(System.out));
+//		junit.run(ApplicationTest.class);
 	}
 
 }

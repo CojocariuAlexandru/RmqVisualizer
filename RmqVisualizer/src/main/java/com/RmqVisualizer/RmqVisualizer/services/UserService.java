@@ -44,6 +44,20 @@ public class UserService {
         return null;
     }
 
+    public ProblemInstance getInstanceByUserAndInstanceIndex(int userIndex, int instanceIndex){
+        int i = 0;
+        List<ProblemInstance> allInstances = problemInstanceRepository.findAll();
+        for(ProblemInstance instance : allInstances){
+            if(instance.getUser().equals(this.getUserByIndex(userIndex))){
+                i = i +1;
+            }
+            if(i == instanceIndex){
+                return instance;
+            }
+        }
+        return null;
+    }
+
     public User getUserByIndex(int index){
         int i;
         List<User> allUsers = userRepository.findAll();

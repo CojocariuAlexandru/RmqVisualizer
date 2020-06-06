@@ -59,12 +59,8 @@ public class ProblemInstanceService {
         return allInstances;
     }
 
-    public void createPrecalculationNumbers(ProblemInstance instance){
-        instance.getPrecalculationNumbers().clear();
-        instance.setPrecalculationNumbers(rmqSolver.getPrecalculationNumbers(instance.getNumbers()));
-    }
 
-    public int getMinimumNumber(ProblemInstance problemInstance, int leftIndex, int rightIndex){
+    public Integer getMinimumNumber(ProblemInstance problemInstance, int leftIndex, int rightIndex){
         int finalResult;
         finalResult = rmqSolver.getMinimumFromRange(problemInstance.getNumbers(), problemInstance.getPrecalculationNumbers(), leftIndex, rightIndex);
         return finalResult;
