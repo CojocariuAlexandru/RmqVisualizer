@@ -32,7 +32,6 @@ public class ProblemInstanceController {
         this.userService = userService;
     }
 
-    @RequestMapping(value = "/result")
     @GetMapping
     public ResponseEntity<Integer> getProblemInstances(@PathVariable int userIndex, @PathVariable int instanceIndex, @RequestParam int leftIndex, @RequestParam int rightIndex){
         ProblemInstance instance = userService.getInstanceByUserAndInstanceIndex(userIndex, instanceIndex);
