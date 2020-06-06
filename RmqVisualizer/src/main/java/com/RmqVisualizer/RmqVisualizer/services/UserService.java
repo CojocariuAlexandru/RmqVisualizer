@@ -44,6 +44,18 @@ public class UserService {
         return null;
     }
 
+    public User getUserByIndex(int index){
+        int i;
+        List<User> allUsers = userRepository.findAll();
+        i = 0;
+        for(User user: allUsers){
+            i = i + 1;
+            if(i == index)
+                return user;
+        }
+        return null;
+    }
+
     public User getUserByName(String userName){
         List<User> allUsers = userRepository.findAll();
         for(User user : allUsers){

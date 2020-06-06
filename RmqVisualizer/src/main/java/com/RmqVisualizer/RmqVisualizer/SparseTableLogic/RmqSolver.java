@@ -1,8 +1,11 @@
 package com.RmqVisualizer.RmqVisualizer.SparseTableLogic;
 
+import org.springframework.stereotype.Service;
+
 import java.util.ArrayList;
 import java.util.List;
 
+@Service
 public class RmqSolver {
     private List<Integer> powersOfTwo;
 
@@ -68,7 +71,7 @@ public class RmqSolver {
         return line*numbersSize - (powersOfTwo.get(line) - 1 - line) + column;
     }
 
-    private Integer smallestPowerOfTwoSmallerThan(Integer maximum){
+    public Integer smallestPowerOfTwoSmallerThan(Integer maximum){
         Integer leftIndex = -1;
         Integer rightIndex = 35;
         Integer middleIndex = 0;

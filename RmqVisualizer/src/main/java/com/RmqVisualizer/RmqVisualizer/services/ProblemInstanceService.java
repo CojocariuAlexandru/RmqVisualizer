@@ -1,7 +1,7 @@
 package com.RmqVisualizer.RmqVisualizer.services;
 
+import com.RmqVisualizer.RmqVisualizer.SparseTableLogic.RmqSolver;
 import com.RmqVisualizer.RmqVisualizer.models.ProblemInstance;
-import com.RmqVisualizer.RmqVisualizer.models.User;
 import com.RmqVisualizer.RmqVisualizer.repositories.ProblemInstanceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,12 +13,12 @@ import java.util.UUID;
 @Service
 public class ProblemInstanceService {
     private ProblemInstanceRepository problemInstanceRepository;
-    private UserService userService;
+    private RmqSolver rmqSolver;
 
     @Autowired
-    public ProblemInstanceService(ProblemInstanceRepository problemInstanceRepository, UserService userService){
+    public ProblemInstanceService(ProblemInstanceRepository problemInstanceRepository, RmqSolver rmqSolver){
         this.problemInstanceRepository = problemInstanceRepository;
-        this.userService = userService;
+        this.rmqSolver = new RmqSolver();
     }
 
     public List<ProblemInstance> getAllProblemInstances(){
@@ -43,22 +43,37 @@ public class ProblemInstanceService {
 
     public ProblemInstance createOrUpdateProblemInstance(ProblemInstance problemInstance){
         problemInstance.setId(UUID.randomUUID());
+        problemInstance.getPrecalculationNumbers().addAll(rmqSolver.getPrecalculationNumbers(problemInstance.getNumbers()));
         problemInstance = problemInstanceRepository.save(problemInstance);
+
         return problemInstance;
+    }
+
+    public List<ProblemInstance> getProblemInstanceByUserId(UUID id){
+        List<ProblemInstance> allInstances = problemInstanceRepository.findAll();
+        for(ProblemInstance instance : allInstances){
+            if(!instance.getUser().getId().equals(id)){
+                allInstances.remove(instance);
+            }
+        }
+        return allInstances;
     }
 
     public void createPrecalculationNumbers(ProblemInstance instance){
         instance.getPrecalculationNumbers().clear();
+        instance.setPrecalculationNumbers(rmqSolver.getPrecalculationNumbers(instance.getNumbers()));
+    }
 
+    public int getMinimumNumber(ProblemInstance problemInstance, int leftIndex, int rightIndex){
+        int finalResult;
+        finalResult = rmqSolver.getMinimumFromRange(problemInstance.getNumbers(), problemInstance.getPrecalculationNumbers(), leftIndex, rightIndex);
+        return finalResult;
     }
 
     public void deleteProblemInstance(ProblemInstance problemInstance){
         problemInstanceRepository.delete(problemInstance);
     }
-//
-//    public int getMinimumNumber(int startIndex, int finalIndex){
-//
-//    }
+
 
 
 }

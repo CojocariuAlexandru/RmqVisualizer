@@ -20,20 +20,24 @@ import java.text.ParseException;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/users/instances")
+@RequestMapping("api/users/{userId}/instances/{instanceId}")
 public class ProblemInstanceController {
     private ProblemInstanceService problemInstanceService;
+    private UserService userService;
     private ModelMapper modelMapper;
 
-    @Autowired ProblemInstanceController(ProblemInstanceService problemInstanceService, ModelMapper modelMapper){
+    @Autowired ProblemInstanceController(ProblemInstanceService problemInstanceService, UserService userService, ModelMapper modelMapper){
         this.problemInstanceService = problemInstanceService;
         this.modelMapper = modelMapper;
+        this.userService = userService;
     }
 
     @GetMapping
-    public ResponseEntity<List<ProblemInstance>> getProblemInstances(){
-        List<ProblemInstance> instances = problemInstanceService.getAllProblemInstances();
-        return new ResponseEntity<List<ProblemInstance>>(instances, new HttpHeaders(), HttpStatus.OK);
+    public ResponseEntity<ProblemInstance> getProblemInstances(@PathVariable int userIndex, @PathVariable int instanceIndex){
+
+        List<ProblemInstance> instances = problemInstanceService.getProblemInstanceByUserId(userService.getUserByIndex(userIndex).getId());
+        ProblemInstance instanceSearched = instances.get(instanceIndex-1);
+        return new ResponseEntity<ProblemInstance>(instanceSearched, new HttpHeaders(), HttpStatus.OK);
     }
 
     @PostMapping
