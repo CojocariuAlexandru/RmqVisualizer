@@ -1,0 +1,192 @@
+swagger: '2.0'
+securityDefinitions:
+  basicAuth:
+    type: basic
+info:
+  description: RMQ Solver API
+  version: 1.0.0
+  title: RMQ Solver API
+  # put the contact info for your development or API team
+  contact:
+    email: cojocariualexandru1@gmail.com
+
+tags:
+- name : users
+  description: Operations on users from the database
+- name : problemInstances
+  description: Operations on problem instances, which are subresources of "user"
+paths:
+  /api/users:
+    get:
+      tags:
+        - users
+      security: 
+        - basicAuth: []
+      summary: Returns all the users from the database
+      responses:
+        200:
+          description: OK
+          
+    post:
+      tags:
+        - users
+      security:
+        - basicAuth: []
+      summary: Creates a user with given name, password
+      parameters:
+        - in : body
+          name : UserInfo
+          description: User's information
+          required: true
+          schema:
+            $ref: "#/definitions/UserInfo"
+      responses:
+        200:
+          description: OK
+          
+    patch:
+      tags:
+        - users
+      security:
+        - basicAuth: []
+      summary: Associates user to a problem instance
+      parameters:
+        - in : body
+          name : AssociationInfo
+          description: User and problem intance's IDs
+          required: true
+          schema:
+            $ref: "#/definitions/AssociationInfo"
+      responses:
+        200:
+          description: OK
+          
+  /api/instances:
+    post:
+      tags:
+        - problemInstances
+      security:
+        - basicAuth: []
+      summary: Creates a problem instance into the database
+      parameters:
+        - in : body
+          name : ProblemInfo
+          description: Problem instance information
+          required: true
+          schema:
+            $ref: "#/definitions/ProblemInstance"
+      responses:
+        200:
+          description: OK
+    
+  /api/users/{userId}/instances/{instanceId}:
+    get:
+      tags:
+        - problemInstances
+      security: 
+        - basicAuth: []
+      summary: Returns a specific problem instance
+      parameters:
+      - in: path
+        name: userId
+        type: integer
+        required: true
+        description: Numeric ID of the user to get
+      - in: path
+        name: instanceId
+        type: integer
+        required: true
+        description: Numeric ID of the user to get
+      responses:
+        200:
+          description: OK
+        
+    
+          
+  /api/users/{userId}/instances/{instanceId}/result:
+    get:
+      tags:
+        - problemInstances
+      security: 
+        - basicAuth: []
+      summary: Returns the result of a problem instance
+      parameters:
+      - in: path
+        name: userId
+        type: integer
+        required: true
+        description: Numeric ID of the user to get
+      - in: path
+        name: instanceId
+        type: integer
+        required: true
+        description: Numeric ID of the user to get
+      - in: query
+        name: leftIndex
+        type: integer
+        required: true
+        description: Numeric ID of the user to get
+      - in: query
+        name: rightIndex
+        type: integer
+        required: true
+        description: Numeric ID of the user to get
+        
+      responses:
+        200:
+          description: OK
+    
+    
+definitions:
+  UserInfo:
+    type: object
+    required:
+    - id
+    - name
+    - password
+    properties:
+      id:
+        type: string
+        example: "0c878320-ed5d-46cd-bd32-1f249e2f5317"
+      name:
+        type: string
+        example: "alex"
+      password:
+        type: string
+        example: "myPASSword4@12"
+        
+  AssociationInfo:
+    type: object
+    required:
+    - userId
+    - problemId
+    properties:
+      userId:
+        type: string
+        example: "0c878320-ed5d-46cd-bd32-1f249e2f5317"
+      problemId:
+        type: string
+        example: "0c878320-ed5d-46cd-bd32-1f249e2f5317"
+        
+  ProblemInstance:
+    type: object
+    required: 
+    - id
+    - numbers
+    properties:
+      id:
+        type: string
+        example: "0c878320-ed5d-46cd-bd32-1f249e2f5317"
+      numbers:
+        type: array
+        items:
+          type: integer
+          example: [11, 59, 22, 591, 245, 49, 8]
+
+
+
+# Added by API Auto Mocking Plugin
+host: "infinite-thicket-62943.herokuapp.com"
+basePath: /
+schemes:
+ - https
