@@ -80,11 +80,11 @@ public class UserService {
         return null;
     }
 
-    public User createOrUpdateUser(String userName, List<ProblemInstance> instanceList) {
+    public User createOrUpdateUser(String userName) {
         User user = new User();
         user.setId(UUID.randomUUID());
         user.setName(userName);
-        user.setProblemInstanceList(instanceList);
+        user.setProblemInstanceList(null);
         user = userRepository.save(user);
         return user;
     }

@@ -10,9 +10,6 @@ public class UserDto {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
     private String name;
-    @OneToMany
-    List<ProblemInstance> problemInstanceList;
-
     public UUID getId() {
         return id;
     }
@@ -27,13 +24,5 @@ public class UserDto {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public List<ProblemInstance> getProblemInstanceList() {
-        return problemInstanceList;
-    }
-
-    public void setProblemInstanceList(List<ProblemInstance> problemInstanceList) {
-        this.problemInstanceList = problemInstanceList;
     }
 }

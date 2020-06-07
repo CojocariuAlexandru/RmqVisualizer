@@ -23,12 +23,13 @@ import java.util.stream.Collectors;
 public class UserController {
     private UserService userService;
     private ModelMapper modelMapper;
-    private Logger logger = LoggerFactory.getLogger(UserController.class);
+    private Logger logger;
 
     @Autowired
     public UserController(UserService userService, ModelMapper modelMapper){
         this.userService = userService;
         this.modelMapper = modelMapper;
+        this.logger = LoggerFactory.getLogger(UserController.class);
     }
 
     @GetMapping
@@ -42,11 +43,11 @@ public class UserController {
     }
 
     @PostMapping
-    @PutMapping
-    public ResponseEntity<User> createOrUpdateUser(@RequestBody User user){
-        User usersCreated = userService.createOrUpdateUser(user.getName(), user.getProblemInstanceList());
+    public ResponseEntity<UserDto> createOrUpdateUser(@RequestBody UserDto user){
+        User userCreated = userService.createOrUpdateUser(user.getName());
+        UserDto userCreatedDto = convertToDto(userCreated);
         logger.info("User created");
-        return new ResponseEntity<User>(usersCreated, new HttpHeaders(), HttpStatus.CREATED);
+        return new ResponseEntity<UserDto>(userCreatedDto, new HttpHeaders(), HttpStatus.CREATED);
     }
 
     @PatchMapping

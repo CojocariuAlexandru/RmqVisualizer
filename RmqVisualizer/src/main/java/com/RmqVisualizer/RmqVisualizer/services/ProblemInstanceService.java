@@ -2,6 +2,7 @@ package com.RmqVisualizer.RmqVisualizer.services;
 
 import com.RmqVisualizer.RmqVisualizer.SparseTableLogic.RmqSolver;
 import com.RmqVisualizer.RmqVisualizer.models.ProblemInstance;
+import com.RmqVisualizer.RmqVisualizer.models.ProblemInstanceDto;
 import com.RmqVisualizer.RmqVisualizer.repositories.ProblemInstanceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -41,12 +42,14 @@ public class ProblemInstanceService {
         return null;
     }
 
-    public ProblemInstance createOrUpdateProblemInstance(ProblemInstance problemInstance){
-        problemInstance.setId(UUID.randomUUID());
-        problemInstance.getPrecalculationNumbers().addAll(rmqSolver.getPrecalculationNumbers(problemInstance.getNumbers()));
-        problemInstance = problemInstanceRepository.save(problemInstance);
+    public ProblemInstance createOrUpdateProblemInstance(ProblemInstanceDto problemInstance){
+        ProblemInstance instance = new ProblemInstance();
+        instance.setId(UUID.randomUUID());
+        instance.getPrecalculationNumbers().addAll(rmqSolver.getPrecalculationNumbers(problemInstance.getNumbers()));
+        instance.getNumbers().addAll(problemInstance.getNumbers());
+        instance = problemInstanceRepository.save(instance);
 
-        return problemInstance;
+        return instance;
     }
 
     public List<ProblemInstance> getProblemInstanceByUserId(UUID id){

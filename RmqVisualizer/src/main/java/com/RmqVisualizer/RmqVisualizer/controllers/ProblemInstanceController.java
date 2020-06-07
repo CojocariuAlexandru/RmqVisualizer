@@ -20,7 +20,6 @@ import java.text.ParseException;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/users/{userId}/instances/{instanceId}")
 public class ProblemInstanceController {
     private ProblemInstanceService problemInstanceService;
     private UserService userService;
@@ -32,15 +31,24 @@ public class ProblemInstanceController {
         this.userService = userService;
     }
 
+    @RequestMapping("api/users/{userId}/instances/{instanceId}/result")
     @GetMapping
     public ResponseEntity<Integer> getProblemInstances(@PathVariable int userIndex, @PathVariable int instanceIndex, @RequestParam int leftIndex, @RequestParam int rightIndex){
         ProblemInstance instance = userService.getInstanceByUserAndInstanceIndex(userIndex, instanceIndex);
         return new ResponseEntity<Integer>(problemInstanceService.getMinimumNumber(instance, leftIndex, rightIndex), new HttpHeaders(), HttpStatus.CREATED);
     }
 
+    @RequestMapping("api/users/{userId}/instances/{instanceId}")
+    @GetMapping
+    public ResponseEntity<ProblemInstanceDto> getProblemInstances(@PathVariable int userIndex, @PathVariable int instanceIndex){
+        ProblemInstance instance = userService.getInstanceByUserAndInstanceIndex(userIndex, instanceIndex);
+        ProblemInstanceDto instanceDto = convertToDto(instance);
+        return new ResponseEntity<ProblemInstanceDto>(instanceDto, new HttpHeaders(), HttpStatus.CREATED);
+    }
+
+    @RequestMapping("api/instances")
     @PostMapping
-    @PutMapping
-    public ResponseEntity<ProblemInstance> createOrUpdateProblemInstance(@RequestBody ProblemInstance instance){
+    public ResponseEntity<ProblemInstance> createOrUpdateProblemInstance(@RequestBody ProblemInstanceDto instance){
         ProblemInstance instanceCreated = problemInstanceService.createOrUpdateProblemInstance(instance);
 
         return new ResponseEntity<ProblemInstance>(instanceCreated, new HttpHeaders(), HttpStatus.CREATED);
