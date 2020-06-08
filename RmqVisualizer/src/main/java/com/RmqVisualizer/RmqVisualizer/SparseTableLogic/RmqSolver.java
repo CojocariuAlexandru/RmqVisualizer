@@ -5,6 +5,10 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Service responsible for implementing the RMQ problem
+ * using Sparse Table datastructure
+ */
 @Service
 public class RmqSolver {
     private List<Integer> powersOfTwo;

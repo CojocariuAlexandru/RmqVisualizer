@@ -36,9 +36,6 @@ public class ProblemInstanceService {
     public ProblemInstance getProblemInstanceById(UUID id){
         List<ProblemInstance> allInstances = problemInstanceRepository.findAll();
         for(ProblemInstance instance : allInstances){
-            System.out.println(instance.getId());
-            System.out.println(id);
-            System.out.println("");
             if(instance.getId().equals(id)){
                 return instance;
             }

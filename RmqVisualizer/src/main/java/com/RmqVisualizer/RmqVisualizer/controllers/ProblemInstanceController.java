@@ -24,29 +24,12 @@ import java.util.List;
 @RequestMapping("api/instances")
 public class ProblemInstanceController {
     private ProblemInstanceService problemInstanceService;
-    private UserService userService;
     private ModelMapper modelMapper;
 
     @Autowired
     public ProblemInstanceController(ProblemInstanceService problemInstanceService, UserService userService, ModelMapper modelMapper){
         this.problemInstanceService = problemInstanceService;
         this.modelMapper = modelMapper;
-        this.userService = userService;
-    }
-
-    @RequestMapping("api/users/{userIndex}/instances/{instanceIndex}/result")
-    @GetMapping
-    public ResponseEntity<Integer> getProblemResult(@PathVariable int userIndex, @PathVariable int instanceIndex, @RequestParam int leftIndex, @RequestParam int rightIndex){
-        ProblemInstance instance = userService.getInstanceByUserAndInstanceIndex(userIndex, instanceIndex);
-        return new ResponseEntity<Integer>(problemInstanceService.getMinimumNumber(instance, leftIndex, rightIndex), new HttpHeaders(), HttpStatus.CREATED);
-    }
-
-    @RequestMapping("api/users/{userIndex}/instances/{instanceIndex}")
-    @GetMapping
-    public ResponseEntity<ProblemInstanceDto> getProblemInstance(@PathVariable int userIndex, @PathVariable int instanceIndex){
-        ProblemInstance instance = userService.getInstanceByUserAndInstanceIndex(userIndex, instanceIndex);
-        ProblemInstanceDto instanceDto = convertToDto(instance);
-        return new ResponseEntity<ProblemInstanceDto>(instanceDto, new HttpHeaders(), HttpStatus.CREATED);
     }
 
     @PostMapping

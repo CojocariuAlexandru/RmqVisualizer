@@ -1,8 +1,7 @@
 package com.RmqVisualizer.RmqVisualizer.controllers;
 
-import com.RmqVisualizer.RmqVisualizer.models.Association;
-import com.RmqVisualizer.RmqVisualizer.models.User;
-import com.RmqVisualizer.RmqVisualizer.models.UserDto;
+import com.RmqVisualizer.RmqVisualizer.models.*;
+import com.RmqVisualizer.RmqVisualizer.services.ProblemInstanceService;
 import com.RmqVisualizer.RmqVisualizer.services.UserService;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
@@ -22,12 +21,14 @@ import java.util.stream.Collectors;
 @RequestMapping("api/users")
 public class UserController {
     private UserService userService;
+    private ProblemInstanceService instanceService;
     private ModelMapper modelMapper;
     private Logger logger;
 
     @Autowired
-    public UserController(UserService userService, ModelMapper modelMapper){
+    public UserController(UserService userService, ProblemInstanceService instanceService, ModelMapper modelMapper){
         this.userService = userService;
+        this.instanceService = instanceService;
         this.modelMapper = modelMapper;
         this.logger = LoggerFactory.getLogger(UserController.class);
     }
@@ -56,8 +57,28 @@ public class UserController {
         userService.assignUserToProblemInstance(association.getUserId(), association.getProblemId());
     }
 
+    @RequestMapping("/{userIndex}/instances/{instanceIndex}/result")
+    @GetMapping
+    public ResponseEntity<Integer> getProblemResult(@PathVariable int userIndex, @PathVariable int instanceIndex, @RequestParam int leftIndex, @RequestParam int rightIndex){
+        ProblemInstance instance = userService.getInstanceByUserAndInstanceIndex(userIndex, instanceIndex);
+        return new ResponseEntity<Integer>(instanceService.getMinimumNumber(instance, leftIndex, rightIndex), new HttpHeaders(), HttpStatus.CREATED);
+    }
+
+    @RequestMapping("/{userIndex}/instances/{instanceIndex}")
+    @GetMapping
+    public ResponseEntity<ProblemInstanceDto> getProblemInstance(@PathVariable int userIndex, @PathVariable int instanceIndex){
+        ProblemInstance instance = userService.getInstanceByUserAndInstanceIndex(userIndex, instanceIndex);
+        ProblemInstanceDto instanceDto = convertToDto(instance);
+        return new ResponseEntity<ProblemInstanceDto>(instanceDto, new HttpHeaders(), HttpStatus.CREATED);
+    }
+
     private UserDto convertToDto(User user) {
         UserDto postDto = modelMapper.map(user, UserDto.class);
+        return postDto;
+    }
+
+    private ProblemInstanceDto convertToDto(ProblemInstance instance){
+        ProblemInstanceDto postDto = modelMapper.map(instance, ProblemInstanceDto.class);
         return postDto;
     }
 
