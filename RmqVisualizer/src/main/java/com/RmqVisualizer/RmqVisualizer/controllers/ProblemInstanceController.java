@@ -7,6 +7,7 @@ import com.RmqVisualizer.RmqVisualizer.models.UserDto;
 import com.RmqVisualizer.RmqVisualizer.services.ProblemInstanceService;
 import com.RmqVisualizer.RmqVisualizer.services.UserService;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.parsing.Problem;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,38 +21,45 @@ import java.text.ParseException;
 import java.util.List;
 
 @RestController
+@RequestMapping("api/instances")
 public class ProblemInstanceController {
     private ProblemInstanceService problemInstanceService;
     private UserService userService;
     private ModelMapper modelMapper;
 
-    @Autowired ProblemInstanceController(ProblemInstanceService problemInstanceService, UserService userService, ModelMapper modelMapper){
+    @Autowired
+    public ProblemInstanceController(ProblemInstanceService problemInstanceService, UserService userService, ModelMapper modelMapper){
         this.problemInstanceService = problemInstanceService;
         this.modelMapper = modelMapper;
         this.userService = userService;
     }
 
-    @RequestMapping("api/users/{userId}/instances/{instanceId}/result")
+    @RequestMapping("api/users/{userIndex}/instances/{instanceIndex}/result")
     @GetMapping
-    public ResponseEntity<Integer> getProblemInstances(@PathVariable int userIndex, @PathVariable int instanceIndex, @RequestParam int leftIndex, @RequestParam int rightIndex){
+    public ResponseEntity<Integer> getProblemResult(@PathVariable int userIndex, @PathVariable int instanceIndex, @RequestParam int leftIndex, @RequestParam int rightIndex){
         ProblemInstance instance = userService.getInstanceByUserAndInstanceIndex(userIndex, instanceIndex);
         return new ResponseEntity<Integer>(problemInstanceService.getMinimumNumber(instance, leftIndex, rightIndex), new HttpHeaders(), HttpStatus.CREATED);
     }
 
-    @RequestMapping("api/users/{userId}/instances/{instanceId}")
+    @RequestMapping("api/users/{userIndex}/instances/{instanceIndex}")
     @GetMapping
-    public ResponseEntity<ProblemInstanceDto> getProblemInstances(@PathVariable int userIndex, @PathVariable int instanceIndex){
+    public ResponseEntity<ProblemInstanceDto> getProblemInstance(@PathVariable int userIndex, @PathVariable int instanceIndex){
         ProblemInstance instance = userService.getInstanceByUserAndInstanceIndex(userIndex, instanceIndex);
         ProblemInstanceDto instanceDto = convertToDto(instance);
         return new ResponseEntity<ProblemInstanceDto>(instanceDto, new HttpHeaders(), HttpStatus.CREATED);
     }
 
-    @RequestMapping("api/instances")
     @PostMapping
     public ResponseEntity<ProblemInstance> createOrUpdateProblemInstance(@RequestBody ProblemInstanceDto instance){
-        ProblemInstance instanceCreated = problemInstanceService.createOrUpdateProblemInstance(instance);
-
+        ProblemInstance instanceCreated = convertToEntity(instance);
+        problemInstanceService.createOrUpdateProblemInstance(instanceCreated);
         return new ResponseEntity<ProblemInstance>(instanceCreated, new HttpHeaders(), HttpStatus.CREATED);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<ProblemInstance>> getAllProblemInstances(){
+        List<ProblemInstance> instances = problemInstanceService.getAllProblemInstances();
+        return new ResponseEntity<List<ProblemInstance>>(instances, new HttpHeaders(), HttpStatus.OK);
     }
 
     private ProblemInstanceDto convertToDto(ProblemInstance problemInstance) {
@@ -59,8 +67,8 @@ public class ProblemInstanceController {
         return instanceDto;
     }
 
-    private User convertToEntity(UserDto postDto) throws ParseException {
-        User post = modelMapper.map(postDto, User.class);
-        return post;
+    private ProblemInstance convertToEntity(ProblemInstanceDto postDto){
+        ProblemInstance instance = modelMapper.map(postDto, ProblemInstance.class);
+        return instance;
     }
 }

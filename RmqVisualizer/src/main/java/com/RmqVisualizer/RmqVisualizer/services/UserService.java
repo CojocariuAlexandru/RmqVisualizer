@@ -36,7 +36,6 @@ public class UserService {
     public User getUserById(UUID id){
         List<User> allUsers = userRepository.findAll();
         for(User user : allUsers){
-            System.out.println(user.getId());
             if(user.getId().equals(id)){
                 return user;
             }
@@ -95,7 +94,7 @@ public class UserService {
 
     public void assignUserToProblemInstance(UUID idUser, UUID idProblemInstance){
         User user = this.getUserById(idUser);
-        ProblemInstance instance = problemInstanceService.getProblemInstanceById(idProblemInstance);
+        ProblemInstance instance = problemInstanceRepository.findById(idProblemInstance).get();
         user.getProblemInstanceList().add(instance);
         instance.setUser(user);
 

@@ -19,6 +19,6 @@ public class ProblemInstance {
     private List<Integer> numbers;
     @ElementCollection
     private List<Integer> precalculationNumbers;
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.ALL})
     private User user;
 }
